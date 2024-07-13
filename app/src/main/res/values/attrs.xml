@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="tiktok_style" format="reference"/>
+    <declare-styleable name="Tiktok_loading_animation">
+        <attr name="violet_circle_color" format="color"/>
+        <attr name="pink_circle_color" format="color"/>
+    </declare-styleable>
+</resources>
