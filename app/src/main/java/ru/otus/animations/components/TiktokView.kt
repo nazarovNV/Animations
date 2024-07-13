@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getIntOrThrow
@@ -39,20 +40,37 @@ class TiktokView@JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
 
-        canvas.drawCircle(
-            dpToPx(SIZE + stroke).toFloat(),
-            (height / 2).toFloat(),
-            dpToPx(SIZE - stroke / 2).toFloat(),
-            pink_circle_color)
-        canvas.translate(dpToPx(SIZE * 2 + DISTANCE).toFloat(), 0f)
+        repeat(2) {
+            canvas.drawCircle(
+                dpToPx(SIZE + stroke).toFloat(),
+                (height / 2).toFloat(),
+                dpToPx(SIZE - stroke / 2).toFloat(),
+                if (it == 1) pink_circle_color else violet_circle_color
+            )
+            canvas.translate(dpToPx(SIZE * 2 + DISTANCE).toFloat(), 0f)
+        }
+    }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        Log.i(TAG, "onMeasure")
+        Log.i(TAG, "Width.size = ${printMeasureSize(widthMeasureSpec)}")
+        Log.i(TAG, "Width.mode = ${printMeasureMode(widthMeasureSpec)}")
+        Log.i(TAG, "Height.size = ${printMeasureSize(heightMeasureSpec)}")
+        Log.i(TAG, "Height.mode = ${printMeasureMode(heightMeasureSpec)}")
+
+        val desiredWidth = 2 * (dpToPx(SIZE) * 2 + dpToPx(DISTANCE)) - dpToPx(DISTANCE)
+        val desiredHeight = dpToPx(SIZE) * 2
+        setMeasuredDimension(
+            resolveSize(desiredWidth, widthMeasureSpec),
+            resolveSize(desiredHeight, heightMeasureSpec)
+        )
     }
     companion object {
         private const val DEFAULT_COUNT = 5
         private const val DEFAULT_VALUE = 0
         private const val DEFAULT_STROKE_WIDTH = 1
-        private const val DISTANCE = 8
-        private const val SIZE = 24
+        private const val DISTANCE = 20
+        private const val SIZE = 50
         private const val TAG = "Rating"
     }
 
