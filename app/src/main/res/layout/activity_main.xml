@@ -7,12 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ru.otus.animations.components.TiktokView
-        android:id="@+id/tiktok"
+    <ru.otus.animations.components.PurpleCircleView
+        android:id="@+id/purple_circle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.252"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ru.otus.animations.components.PinkCircleView
+        android:id="@+id/pink_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
