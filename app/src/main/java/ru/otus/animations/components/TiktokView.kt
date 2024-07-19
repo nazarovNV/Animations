@@ -1,10 +1,12 @@
 package ru.otus.animations.components
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getIntOrThrow
@@ -39,25 +41,18 @@ class TiktokView@JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-
         repeat(2) {
             canvas.drawCircle(
-                dpToPx(SIZE + stroke).toFloat(),
+                if (it == 0) firstCircleX else secondCircleX,
                 (height / 2).toFloat(),
-                dpToPx(SIZE - stroke / 2).toFloat(),
-                if (it == 1) pink_circle_color else violet_circle_color
+                if (it == 0) firstCircleRadius else secondCircleRadius,
+                if (it == 0) violet_circle_color else pink_circle_color
             )
             canvas.translate(dpToPx(SIZE * 2 + DISTANCE).toFloat(), 0f)
         }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        Log.i(TAG, "onMeasure")
-        Log.i(TAG, "Width.size = ${printMeasureSize(widthMeasureSpec)}")
-        Log.i(TAG, "Width.mode = ${printMeasureMode(widthMeasureSpec)}")
-        Log.i(TAG, "Height.size = ${printMeasureSize(heightMeasureSpec)}")
-        Log.i(TAG, "Height.mode = ${printMeasureMode(heightMeasureSpec)}")
-
         val desiredWidth = 2 * (dpToPx(SIZE) * 2 + dpToPx(DISTANCE)) - dpToPx(DISTANCE)
         val desiredHeight = dpToPx(SIZE) * 2
         setMeasuredDimension(
@@ -65,6 +60,39 @@ class TiktokView@JvmOverloads constructor(
             resolveSize(desiredHeight, heightMeasureSpec)
         )
     }
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        startAnimation()
+    }
+
+
+
+    private fun startAnimation() {
+        val animator = ValueAnimator.ofFloat(0f, 1f)
+        animator.duration = 3000 // Продолжительность анимации в миллисекундах
+
+        animator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Float
+            val radius = dpToPx(SIZE - stroke / 2).toFloat()
+
+            // Перемещение кружков
+            val translationX = dpToPx(SIZE * 2 + DISTANCE).toFloat() * value
+            firstCircleX = dpToPx(SIZE + stroke).toFloat() + translationX
+            secondCircleX = dpToPx(SIZE + stroke).toFloat() - translationX
+
+            // Изменение размера и прозрачности кружков
+            firstCircleRadius = radius + (radius * value)
+            secondCircleRadius = radius - (radius * value)
+            val alpha = (255 * (1 - value)).toInt()
+
+            pink_circle_color.alpha = alpha
+
+            invalidate()
+        }
+
+        animator.start()
+    }
+
     companion object {
         private const val DEFAULT_COUNT = 5
         private const val DEFAULT_VALUE = 0
@@ -72,7 +100,13 @@ class TiktokView@JvmOverloads constructor(
         private const val DISTANCE = 20
         private const val SIZE = 50
         private const val TAG = "Rating"
+        private var firstCircleX = 100f
+        private var secondCircleX = 200f
+        private var firstCircleRadius = 50f
+        private var secondCircleRadius = 50f
     }
+
+
 
 
 }
