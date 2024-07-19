@@ -33,23 +33,17 @@ class TiktokView@JvmOverloads constructor(
                 style = Paint.Style.FILL
                 color = getColorOrThrow(R.styleable.Tiktok_loading_animation_violet_circle_color)
             }
-            pink_circle_color = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                style = Paint.Style.FILL
-                color = getColorOrThrow(R.styleable.Tiktok_loading_animation_pink_circle_color)
-            }
         }
     }
 
     override fun onDraw(canvas: Canvas) {
-        repeat(2) {
             canvas.drawCircle(
-                if (it == 0) firstCircleX else secondCircleX,
+                firstCircleX,
                 (height / 2).toFloat(),
-                if (it == 0) firstCircleRadius else secondCircleRadius,
-                if (it == 0) violet_circle_color else pink_circle_color
+                firstCircleRadius,
+                violet_circle_color
             )
             canvas.translate(dpToPx(SIZE * 2 + DISTANCE).toFloat(), 0f)
-        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -62,35 +56,6 @@ class TiktokView@JvmOverloads constructor(
     }
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        startAnimation()
-    }
-
-
-
-    private fun startAnimation() {
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.duration = 3000 // Продолжительность анимации в миллисекундах
-
-        animator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Float
-            val radius = dpToPx(SIZE - stroke / 2).toFloat()
-
-            // Перемещение кружков
-            val translationX = dpToPx(SIZE * 2 + DISTANCE).toFloat() * value
-            firstCircleX = dpToPx(SIZE + stroke).toFloat() + translationX
-            secondCircleX = dpToPx(SIZE + stroke).toFloat() - translationX
-
-            // Изменение размера и прозрачности кружков
-            firstCircleRadius = radius + (radius * value)
-            secondCircleRadius = radius - (radius * value)
-            val alpha = (255 * (1 - value)).toInt()
-
-            pink_circle_color.alpha = alpha
-
-            invalidate()
-        }
-
-        animator.start()
     }
 
     companion object {
