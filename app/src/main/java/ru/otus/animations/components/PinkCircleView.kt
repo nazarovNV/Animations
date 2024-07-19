@@ -1,10 +1,15 @@
 package ru.otus.animations.components
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
@@ -50,6 +55,29 @@ class PinkCircleView@JvmOverloads constructor(
     }
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        repeat(100){
+            animatePinkCircle()
+        }
+
+    }
+
+    private fun animatePinkCircle() {
+        val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius)
+        val radiusAnimator = ValueAnimator.ofPropertyValuesHolder(radiusHolder).apply {
+            duration = 1000
+            interpolator = AccelerateInterpolator()
+            addUpdateListener {
+                firstCircleRadius = it.getAnimatedValue("radius") as Float
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    super.onAnimationEnd(animation)
+                    animatePinkCircle() // Запуск новой анимации после завершения текущей
+                }
+            })
+            start()
+        }
     }
 
     companion object {
