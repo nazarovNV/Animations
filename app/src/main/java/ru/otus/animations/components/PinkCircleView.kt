@@ -64,7 +64,7 @@ class PinkCircleView@JvmOverloads constructor(
     private fun animatePinkCircle() {
         val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius)
         val radiusAnimator = ValueAnimator.ofPropertyValuesHolder(radiusHolder).apply {
-            duration = 1000
+            duration = 2000
             interpolator = AccelerateInterpolator()
             addUpdateListener {
                 firstCircleRadius = it.getAnimatedValue("radius") as Float
