@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
+import android.view.animation.LinearInterpolator
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
@@ -62,12 +63,12 @@ class PinkCircleView@JvmOverloads constructor(
     }
 
     private fun animatePinkCircle() {
-        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, -300f, -350f, -350f, -350f) // Анимация изменения позиции по оси x
+        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, -182.5f, -365f, -365f, -182.5f, 0f, 0f) // Анимация изменения позиции по оси x
 
-        val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius)
+        val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius,firstCircleRadius, firstCircleRadius)
         val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, xHolder).apply {
             duration = 2000
-            interpolator = AccelerateInterpolator()
+            interpolator = LinearInterpolator()
             addUpdateListener {
                 firstCircleRadius = it.getAnimatedValue("radius") as Float
                 this@PinkCircleView.translationX = it.getAnimatedValue("x") as Float
