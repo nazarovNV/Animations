@@ -7,6 +7,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -46,6 +47,7 @@ class PinkCircleView@JvmOverloads constructor(
             canvas.translate(dpToPx(SIZE * 2).toFloat(), 0f)
     }
 
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val desiredWidth = dpToPx(SIZE)
         val desiredHeight = dpToPx(SIZE)
@@ -54,19 +56,15 @@ class PinkCircleView@JvmOverloads constructor(
             resolveSize(desiredHeight, heightMeasureSpec)
         )
     }
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        animatePinkCircle()
-    }
 
-    private fun animatePinkCircle() {
-        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, -182.5f, -365f, -365f, -182.5f, 0f, 0f) // Анимация изменения позиции по оси x
-        val yHolder = PropertyValuesHolder.ofFloat("y", 0f, -30f, 0f, 0f, 0f, 0f, 0f) // Анимация изменения позиции по оси y
+    fun animatePinkCircle() {
+        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, -182.5f, -365f, -365f, -182.5f, 0f) // Анимация изменения позиции по оси x
+        val yHolder = PropertyValuesHolder.ofFloat("y", 0f, -30f, 0f, 0f, 0f, 0f) // Анимация изменения позиции по оси y
         val alphaHolder = PropertyValuesHolder.ofInt("alpha", 255, 0, 255, 255, 255, 255, 255)
-        val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius,firstCircleRadius, firstCircleRadius)
+        val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius+15f,150f)
         val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, xHolder, yHolder, alphaHolder).apply {
-            duration = 4000
-            val myInterpolator = PathInterpolator(0.58f,0.25f,0.39f,0.87f)
+            duration = 3000
+            val myInterpolator = MyInterpolator.myInterpolator
             interpolator = myInterpolator
             addUpdateListener {
                 firstCircleRadius = it.getAnimatedValue("radius") as Float
@@ -75,11 +73,7 @@ class PinkCircleView@JvmOverloads constructor(
                 pink_circle_color.alpha = it.getAnimatedValue("alpha") as Int
                 invalidate()
             }
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    animatePinkCircle() // Запуск новой анимации после завершения текущей
-                }
-            })
+
             start()
         }
     }

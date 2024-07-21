@@ -6,6 +6,9 @@ plugins {
 android {
     namespace 'ru.otus.animations'
     compileSdk 33
+    buildFeatures {
+        viewBinding  true
+    }
 
     defaultConfig {
         applicationId "ru.otus.animations"

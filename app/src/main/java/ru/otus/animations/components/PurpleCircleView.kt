@@ -14,6 +14,7 @@ import android.view.animation.PathInterpolator
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
+import android.os.Handler
 
 class PurpleCircleView@JvmOverloads constructor(
     context: Context,
@@ -53,25 +54,16 @@ class PurpleCircleView@JvmOverloads constructor(
             resolveSize(desiredHeight, heightMeasureSpec)
         )
     }
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        animatePurpleCircle()
-    }
-    private fun animatePurpleCircle() {
-        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, 182.5f, 365f, 365f, 182.5f, 0f, 0f) // Анимация изменения позиции по оси x
+    fun animatePurpleCircle() {
+        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, 182.5f, 365f, 365f, 182.5f, 0f) // Анимация изменения позиции по оси x
         val Animator = ValueAnimator.ofPropertyValuesHolder(xHolder).apply {
-            duration = 4000
-            val myInterpolator = PathInterpolator(0.58f,0.25f,0.39f,0.87f)
+            duration = 3000
+            val myInterpolator = MyInterpolator.myInterpolator
             interpolator = myInterpolator
             addUpdateListener {
                 this@PurpleCircleView.translationX = it.getAnimatedValue("x") as Float
                 invalidate()
             }
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    animatePurpleCircle() // Запуск новой анимации после завершения текущей
-                }
-            })
             start()
         }
     }
