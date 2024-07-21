@@ -8,6 +8,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import androidx.core.content.res.getColorOrThrow
@@ -21,8 +22,7 @@ class PinkCircleView@JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
     private var stroke = DEFAULT_STROKE_WIDTH
     private lateinit var pink_circle_color: Paint
-    private var circleX = (width/2).toFloat()
-
+    private var circleX = translationX
     init {
         initCircles(attrs, defStyleAttr)
     }
@@ -38,7 +38,7 @@ class PinkCircleView@JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
             canvas.drawCircle(
-                circleX,
+                (width / 2).toFloat(),
                 (height / 2).toFloat(),
                 firstCircleRadius,
                 pink_circle_color
@@ -62,7 +62,7 @@ class PinkCircleView@JvmOverloads constructor(
     }
 
     private fun animatePinkCircle() {
-        val xHolder = PropertyValuesHolder.ofFloat("x", circleX, circleX - DISTANCE/2, circleX - DISTANCE/2, circleX + DISTANCE/2, circleX + DISTANCE/2) // Анимация изменения позиции по оси x
+        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, -300f, -350f, -350f, -350f) // Анимация изменения позиции по оси x
 
         val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius)
         val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, xHolder).apply {
@@ -70,7 +70,8 @@ class PinkCircleView@JvmOverloads constructor(
             interpolator = AccelerateInterpolator()
             addUpdateListener {
                 firstCircleRadius = it.getAnimatedValue("radius") as Float
-                circleX = it.getAnimatedValue("x") as Float
+                this@PinkCircleView.horizontal = it.getAnimatedValue("x") as Float
+                Log.i("Xposition", translationX.toString())
                 invalidate()
             }
             addListener(object : AnimatorListenerAdapter() {
