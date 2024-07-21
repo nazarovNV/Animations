@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.view.animation.PathInterpolator
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
@@ -21,9 +22,7 @@ class PinkCircleView@JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.tiktok_style
 ) : View(context, attrs, defStyleAttr) {
-    private var stroke = DEFAULT_STROKE_WIDTH
     private lateinit var pink_circle_color: Paint
-    private var circleX = translationX
     init {
         initCircles(attrs, defStyleAttr)
     }
@@ -58,21 +57,22 @@ class PinkCircleView@JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         animatePinkCircle()
-
-
     }
 
     private fun animatePinkCircle() {
         val xHolder = PropertyValuesHolder.ofFloat("x", 0f, -182.5f, -365f, -365f, -182.5f, 0f, 0f) // Анимация изменения позиции по оси x
-
+        val yHolder = PropertyValuesHolder.ofFloat("y", 0f, -30f, 0f, 0f, 0f, 0f, 0f) // Анимация изменения позиции по оси y
+        val alphaHolder = PropertyValuesHolder.ofInt("alpha", 255, 0, 255, 255, 255, 255, 255)
         val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius,firstCircleRadius, firstCircleRadius)
-        val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, xHolder).apply {
-            duration = 2000
-            interpolator = LinearInterpolator()
+        val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, xHolder, yHolder, alphaHolder).apply {
+            duration = 4000
+            val myInterpolator = PathInterpolator(0.58f,0.25f,0.39f,0.87f)
+            interpolator = myInterpolator
             addUpdateListener {
                 firstCircleRadius = it.getAnimatedValue("radius") as Float
                 this@PinkCircleView.translationX = it.getAnimatedValue("x") as Float
-                Log.i("Xposition", translationX.toString())
+                this@PinkCircleView.translationY = it.getAnimatedValue("y") as Float
+                pink_circle_color.alpha = it.getAnimatedValue("alpha") as Int
                 invalidate()
             }
             addListener(object : AnimatorListenerAdapter() {
@@ -85,14 +85,8 @@ class PinkCircleView@JvmOverloads constructor(
     }
 
     companion object {
-        private const val DEFAULT_STROKE_WIDTH = 1
-        private const val DISTANCE = 100
         private const val SIZE = 150
-        private const val TAG = "Rating"
-        private var firstCircleX = SIZE * 1f
         private var firstCircleRadius = 150f
-        private var secondCircleX = 200f
-        private var secondCircleRadius = 50f
     }
 
 

@@ -1,10 +1,16 @@
 package ru.otus.animations.components
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.LinearInterpolator
+import android.view.animation.PathInterpolator
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
@@ -14,7 +20,6 @@ class PurpleCircleView@JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.tiktok_style
 ) : View(context, attrs, defStyleAttr) {
-    private var stroke = DEFAULT_STROKE_WIDTH
     private lateinit var violet_circle_color: Paint
 
     init {
@@ -50,17 +55,30 @@ class PurpleCircleView@JvmOverloads constructor(
     }
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        animatePurpleCircle()
+    }
+    private fun animatePurpleCircle() {
+        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, 182.5f, 365f, 365f, 182.5f, 0f, 0f) // Анимация изменения позиции по оси x
+        val Animator = ValueAnimator.ofPropertyValuesHolder(xHolder).apply {
+            duration = 4000
+            val myInterpolator = PathInterpolator(0.58f,0.25f,0.39f,0.87f)
+            interpolator = myInterpolator
+            addUpdateListener {
+                this@PurpleCircleView.translationX = it.getAnimatedValue("x") as Float
+                invalidate()
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    animatePurpleCircle() // Запуск новой анимации после завершения текущей
+                }
+            })
+            start()
+        }
     }
 
     companion object {
-        private const val DEFAULT_STROKE_WIDTH = 1
-        private const val DISTANCE = 20
         private const val SIZE = 150
-        private const val TAG = "Rating"
-        private var firstCircleX = SIZE * 1f
         private var firstCircleRadius = 150f
-        private var secondCircleX = 200f
-        private var secondCircleRadius = 50f
     }
 
 
