@@ -21,6 +21,7 @@ class PinkCircleView@JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
     private var stroke = DEFAULT_STROKE_WIDTH
     private lateinit var pink_circle_color: Paint
+    private var circleX = (width/2).toFloat()
 
     init {
         initCircles(attrs, defStyleAttr)
@@ -37,7 +38,7 @@ class PinkCircleView@JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
             canvas.drawCircle(
-                (width/2).toFloat(),
+                circleX,
                 (height / 2).toFloat(),
                 firstCircleRadius,
                 pink_circle_color
@@ -55,24 +56,25 @@ class PinkCircleView@JvmOverloads constructor(
     }
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        repeat(100){
-            animatePinkCircle()
-        }
+        animatePinkCircle()
+
 
     }
 
     private fun animatePinkCircle() {
+        val xHolder = PropertyValuesHolder.ofFloat("x", circleX, circleX - DISTANCE/2, circleX - DISTANCE/2, circleX + DISTANCE/2, circleX + DISTANCE/2) // Анимация изменения позиции по оси x
+
         val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius)
-        val radiusAnimator = ValueAnimator.ofPropertyValuesHolder(radiusHolder).apply {
+        val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, xHolder).apply {
             duration = 2000
             interpolator = AccelerateInterpolator()
             addUpdateListener {
                 firstCircleRadius = it.getAnimatedValue("radius") as Float
+                circleX = it.getAnimatedValue("x") as Float
                 invalidate()
             }
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
                     animatePinkCircle() // Запуск новой анимации после завершения текущей
                 }
             })
@@ -82,7 +84,7 @@ class PinkCircleView@JvmOverloads constructor(
 
     companion object {
         private const val DEFAULT_STROKE_WIDTH = 1
-        private const val DISTANCE = 20
+        private const val DISTANCE = 100
         private const val SIZE = 150
         private const val TAG = "Rating"
         private var firstCircleX = SIZE * 1f
