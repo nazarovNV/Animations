@@ -70,7 +70,7 @@ class PinkCircleView@JvmOverloads constructor(
             interpolator = AccelerateInterpolator()
             addUpdateListener {
                 firstCircleRadius = it.getAnimatedValue("radius") as Float
-                this@PinkCircleView.horizontal = it.getAnimatedValue("x") as Float
+                this@PinkCircleView.translationX = it.getAnimatedValue("x") as Float
                 Log.i("Xposition", translationX.toString())
                 invalidate()
             }
