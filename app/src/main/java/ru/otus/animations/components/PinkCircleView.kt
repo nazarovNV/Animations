@@ -1,19 +1,12 @@
 package ru.otus.animations.components
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.os.Handler
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.LinearInterpolator
-import android.view.animation.PathInterpolator
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
@@ -58,12 +51,12 @@ class PinkCircleView@JvmOverloads constructor(
     }
 
     fun animatePinkCircle() {
-        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, -182.5f, -365f, -365f, -182.5f, 0f) // Анимация изменения позиции по оси x
-        val yHolder = PropertyValuesHolder.ofFloat("y", 0f, -30f, 0f, 0f, 0f, 0f) // Анимация изменения позиции по оси y
-        val alphaHolder = PropertyValuesHolder.ofInt("alpha", 255, 0, 255, 255, 255, 255, 255)
-        val radiusHolder = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius+15f,150f)
-        val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, xHolder, yHolder, alphaHolder).apply {
-            duration = 3000
+        val xHolder_1 = PropertyValuesHolder.ofFloat("x", 0f, -182.5f, -365f) // Анимация изменения позиции по оси x
+        val yHolder_1 = PropertyValuesHolder.ofFloat("y", 0f, -30f, 0f) // Анимация изменения позиции по оси y
+        val alphaHolder_1 = PropertyValuesHolder.ofInt("alpha", 255, 0, 255)
+        val radiusHolder_1 = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius)
+        val Animator_1 = ValueAnimator.ofPropertyValuesHolder(radiusHolder_1, xHolder_1, yHolder_1, alphaHolder_1).apply {
+            duration = 1000
             val myInterpolator = MyInterpolator.myInterpolator
             interpolator = myInterpolator
             addUpdateListener {
@@ -73,9 +66,25 @@ class PinkCircleView@JvmOverloads constructor(
                 pink_circle_color.alpha = it.getAnimatedValue("alpha") as Int
                 invalidate()
             }
-
             start()
         }
+//        val xHolder_2 = PropertyValuesHolder.ofFloat("x", 0f, -182.5f, -365f, -365f, -182.5f, 0f) // Анимация изменения позиции по оси x
+//        val yHolder_2 = PropertyValuesHolder.ofFloat("y", 0f, -30f, 0f, 0f, 0f, 0f) // Анимация изменения позиции по оси y
+//        val alphaHolder_2 = PropertyValuesHolder.ofInt("alpha", 255, 0, 255, 255, 255, 255, 255)
+//        val radiusHolder_2 = PropertyValuesHolder.ofFloat("radius", firstCircleRadius, 120f, firstCircleRadius,firstCircleRadius,firstCircleRadius+15f,150f)
+//        val Animator_2 = ValueAnimator.ofPropertyValuesHolder(radiusHolder_2, xHolder_2, yHolder_2, alphaHolder_2).apply {
+//            duration = 3000
+//            val myInterpolator = MyInterpolator.myInterpolator
+//            interpolator = myInterpolator
+//            addUpdateListener {
+//                firstCircleRadius = it.getAnimatedValue("radius") as Float
+//                this@PinkCircleView.translationX = it.getAnimatedValue("x") as Float
+//                this@PinkCircleView.translationY = it.getAnimatedValue("y") as Float
+//                pink_circle_color.alpha = it.getAnimatedValue("alpha") as Int
+//                invalidate()
+//            }
+//            start()
+//        }
     }
 
     companion object {

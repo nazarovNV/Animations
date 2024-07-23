@@ -1,7 +1,5 @@
 package ru.otus.animations.components
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.content.Context
@@ -9,12 +7,9 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.LinearInterpolator
-import android.view.animation.PathInterpolator
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
-import android.os.Handler
 
 class PurpleCircleView@JvmOverloads constructor(
     context: Context,
@@ -55,9 +50,9 @@ class PurpleCircleView@JvmOverloads constructor(
         )
     }
     fun animatePurpleCircle() {
-        val xHolder = PropertyValuesHolder.ofFloat("x", 0f, 182.5f, 365f, 365f, 182.5f, 0f) // Анимация изменения позиции по оси x
-        val Animator = ValueAnimator.ofPropertyValuesHolder(xHolder).apply {
-            duration = 3000
+        val xHolder_1 = PropertyValuesHolder.ofFloat("x", 0f, 182.5f, 365f) // Анимация изменения позиции по оси x
+        val Animator_1 = ValueAnimator.ofPropertyValuesHolder(xHolder_1).apply {
+            duration = 1000
             val myInterpolator = MyInterpolator.myInterpolator
             interpolator = myInterpolator
             addUpdateListener {
@@ -66,6 +61,17 @@ class PurpleCircleView@JvmOverloads constructor(
             }
             start()
         }
+//        val xHolder_2 = PropertyValuesHolder.ofFloat("x", 0f, 182.5f, 365f, 365f, 182.5f, 0f) // Анимация изменения позиции по оси x
+//        val Animator_2 = ValueAnimator.ofPropertyValuesHolder(xHolder_2).apply {
+//            duration = 3000
+//            val myInterpolator = MyInterpolator.myInterpolator
+//            interpolator = myInterpolator
+//            addUpdateListener {
+//                this@PurpleCircleView.translationX = it.getAnimatedValue("x") as Float
+//                invalidate()
+//            }
+//            start()
+//        }
     }
 
     companion object {
