@@ -3,5 +3,6 @@
     <style name="tiktok_loading_animation">
         <item name="violet_circle_color">@color/purple</item>
         <item name="pink_circle_color">@color/pink</item>
+        <item name="teal_circle_color">@color/teal</item>
     </style>
 </resources>

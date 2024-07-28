@@ -18,7 +18,10 @@ class MainActivity : AppCompatActivity() {
             binding.pinkCircle.animatePinkCircle()
             binding.purpleCircle.animatePurpleCircle()
         }
-        setContentView(binding.root)
 
+        binding.tealCirclesView.setOnClickListener {
+            binding.tealCirclesView.animateTealCircle()
+        }
+        setContentView(binding.root)
     }
 }

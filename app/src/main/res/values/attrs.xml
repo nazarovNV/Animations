@@ -4,5 +4,6 @@
     <declare-styleable name="Tiktok_loading_animation">
         <attr name="violet_circle_color" format="color"/>
         <attr name="pink_circle_color" format="color"/>
+        <attr name="teal_circle_color" format="color"/>
     </declare-styleable>
 </resources>
