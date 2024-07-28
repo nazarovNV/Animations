@@ -7,25 +7,28 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.os.Handler
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
 
-
-
 data class Ripple(var radius: Float, var alpha: Int)
-class TealCirclesView@JvmOverloads constructor(
+
+class TealCirclesView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.tiktok_style
 ) : View(context, attrs, defStyleAttr) {
-    private lateinit var teal_circle_color: Paint
+
+    private lateinit var tealCircleColor: Paint
+    private val ripples = mutableListOf<Ripple>()
+    private val handler = Handler()
+    private var currentRippleRadius = 0f
+
     init {
         initCircles(attrs, defStyleAttr)
+        animateTealCircle()
     }
-
-    private val ripples = mutableListOf<Ripple>()
-    private var currentRippleRadius = 0f
 
     private fun initCircles(attrs: AttributeSet?, defStyleAttr: Int) {
         context.withStyledAttributes(
@@ -34,7 +37,7 @@ class TealCirclesView@JvmOverloads constructor(
             defStyleAttr,
             R.style.tiktok_loading_animation
         ) {
-            teal_circle_color = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            tealCircleColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 style = Paint.Style.FILL
                 color = getColorOrThrow(R.styleable.Tiktok_loading_animation_teal_circle_color)
             }
@@ -42,13 +45,16 @@ class TealCirclesView@JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawCircle(
-            (width / 2).toFloat(),
-            (height / 2).toFloat(),
-            firstCircleRadius,
-            teal_circle_color
-        )
-        canvas.translate(dpToPx(SIZE * 2).toFloat(), 0f)
+        // Отрисовка всех кругов
+        ripples.forEach { ripple ->
+            tealCircleColor.alpha = ripple.alpha
+            canvas.drawCircle(
+                (width / 2).toFloat(),
+                (height / 2).toFloat(),
+                ripple.radius,
+                tealCircleColor
+            )
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -59,27 +65,51 @@ class TealCirclesView@JvmOverloads constructor(
             resolveSize(desiredHeight, heightMeasureSpec)
         )
     }
+
     companion object {
         private const val SIZE = 300
         private var firstCircleRadius = 60f
     }
 
     fun animateTealCircle() {
+        // Добавляем первый круг в список
+        ripples.add(Ripple(firstCircleRadius, 255))
+
+        // Запускаем анимацию для каждого круга
+        animateRipple(ripples.last())
+
+        // Запускаем Handler для добавления нового круга каждую секунду
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                val newRipple = Ripple(firstCircleRadius, 255)
+                ripples.add(newRipple)
+                animateRipple(newRipple)
+
+                // Повторяем через 1 секунду
+                handler.postDelayed(this, 1000)
+            }
+        }, 1000)
+    }
+
+    private fun animateRipple(ripple: Ripple) {
         val alphaHolder = PropertyValuesHolder.ofInt("alpha", 255, 0)
-        val radiusHolder = PropertyValuesHolder.ofFloat("radius",
-            firstCircleRadius, 300f)
-        val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, alphaHolder).apply {
-            repeatCount = ValueAnimator.INFINITE
+        val radiusHolder = PropertyValuesHolder.ofFloat("radius", ripple.radius, 300f)
+
+        ValueAnimator.ofPropertyValuesHolder(radiusHolder, alphaHolder).apply {
             duration = 3000
-            val myInterpolator = MyInterpolator.myInterpolator
-            interpolator = myInterpolator
+            interpolator = MyInterpolator.myInterpolator
             addUpdateListener {
-                firstCircleRadius = it.getAnimatedValue("radius") as Float
-                teal_circle_color.alpha = it.getAnimatedValue("alpha") as Int
+                ripple.radius = it.getAnimatedValue("radius") as Float
+                ripple.alpha = it.getAnimatedValue("alpha") as Int
                 invalidate()
             }
             start()
         }
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        // Очищаем Handler при уничтожении View
+        handler.removeCallbacksAndMessages(null)
+    }
 }
