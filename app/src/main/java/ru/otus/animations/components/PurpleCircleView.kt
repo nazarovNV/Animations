@@ -65,6 +65,7 @@ class PurpleCircleView@JvmOverloads constructor(
                 invalidate()
             }
             start()
+            //af
         }
     }
 
