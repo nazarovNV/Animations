@@ -11,16 +11,21 @@ import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.withStyledAttributes
 import ru.otus.animations.R
 
+
+
+data class Ripple(var radius: Float, var alpha: Int)
 class TealCirclesView@JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.tiktok_style
 ) : View(context, attrs, defStyleAttr) {
     private lateinit var teal_circle_color: Paint
-
     init {
         initCircles(attrs, defStyleAttr)
     }
+
+    private val ripples = mutableListOf<Ripple>()
+    private var currentRippleRadius = 0f
 
     private fun initCircles(attrs: AttributeSet?, defStyleAttr: Int) {
         context.withStyledAttributes(
@@ -64,6 +69,7 @@ class TealCirclesView@JvmOverloads constructor(
         val radiusHolder = PropertyValuesHolder.ofFloat("radius",
             firstCircleRadius, 300f)
         val Animator = ValueAnimator.ofPropertyValuesHolder(radiusHolder, alphaHolder).apply {
+            repeatCount = ValueAnimator.INFINITE
             duration = 3000
             val myInterpolator = MyInterpolator.myInterpolator
             interpolator = myInterpolator
