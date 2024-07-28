@@ -45,7 +45,6 @@ class TealCirclesView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        // Отрисовка всех кругов
         ripples.forEach { ripple ->
             tealCircleColor.alpha = ripple.alpha
             canvas.drawCircle(
@@ -85,7 +84,6 @@ class TealCirclesView @JvmOverloads constructor(
                 ripples.add(newRipple)
                 animateRipple(newRipple)
 
-                // Повторяем через 1 секунду
                 handler.postDelayed(this, 1000)
             }
         }, 1000)
@@ -109,7 +107,7 @@ class TealCirclesView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        // Очищаем Handler при уничтожении View
+
         handler.removeCallbacksAndMessages(null)
     }
 }
